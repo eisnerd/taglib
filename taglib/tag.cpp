@@ -24,6 +24,7 @@
  ***************************************************************************/
 
 #include "tag.h"
+#include <iostream>
 
 using namespace TagLib;
 
@@ -42,6 +43,17 @@ Tag::~Tag()
 
 }
 
+Picture *Tag::picture() const
+{
+	return NULL;
+}
+
+Tag::PictureList Tag::pictures() const
+{
+	std::cerr << "Default Tag::pictures implementation" << std::endl;
+	return empty_pictures_list;
+}
+	
 bool Tag::isEmpty() const
 {
   return (title().isEmpty() &&

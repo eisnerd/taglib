@@ -96,6 +96,15 @@ public:
   bool hasXiphComment;
   bool hasID3v2;
   bool hasID3v1;
+
+  _PictureList pictureList;
+  bool pictureListValid;
+  
+  void Invalidate()
+  {
+    pictureListValid = false;
+    pictureList.clear();
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -476,16 +485,35 @@ long FLAC::File::findID3v2()
   return -1;
 }
 
-List<FLAC::Picture *> FLAC::File::pictureList()
+FLAC::Picture *FLAC::File::picture() const
 {
-  List<Picture *> pictures;
-  for(uint i = 0; i < d->blocks.size(); i++) {
-    Picture *picture = dynamic_cast<Picture *>(d->blocks[i]);
-    if(picture) {
-      pictures.append(picture);
+	PictureList pictureList = pictures();
+	if (pictureList.isEmpty())
+		return NULL;
+	else
+		return dynamic_cast<FLAC::Picture *>(pictureList.front());
+}
+
+FLAC::File::PictureList FLAC::File::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    for(uint i = 0; i < d->blocks.size(); i++) {
+      Picture *picture = dynamic_cast<Picture *>(d->blocks[i]);
+      if(picture) {
+        d->pictureList.sortedInsert(picture);
+      }
     }
+    Tag *t = tag();
+    if (t) {
+      Tag::PictureList tagPictures = t->pictures();
+      for (Tag::_PictureList::ConstIterator it = tagPictures.begin(), end = tagPictures.end(); it != end; it++) {
+        d->pictureList.sortedInsert(*it);
+      }
+    }
+    d->pictureListValid = true;
   }
-  return pictures;
+  return d->pictureList;
 }
 
 void FLAC::File::addPicture(Picture *picture)

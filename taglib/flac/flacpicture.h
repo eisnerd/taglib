@@ -99,6 +99,18 @@ namespace TagLib {
       Type type() const;
 
       /*!
+       * Returns the name of the type of the image.
+       */
+      String typeName() const;
+
+      /*!
+       * Returns the type of the image as a uint.
+       */
+      uint typeCode() const;
+
+	  uint typeCodeOrder() const;
+	  
+      /*!
        * Sets the type of the image.
        */
       void setType(Type type);
@@ -199,8 +211,6 @@ namespace TagLib {
       class PicturePrivate;
       PicturePrivate *d;
     };
-
-    typedef List<Picture> PictureList;
 
   }
 

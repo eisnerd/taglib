@@ -34,6 +34,7 @@
 #include "taglib_export.h"
 
 #include "id3v2framefactory.h"
+#include "frames/attachedpictureframe.h"
 
 namespace TagLib {
 
@@ -259,6 +260,25 @@ namespace TagLib {
        * returned by frameList()
        */
       void removeFrames(const ByteVector &id);
+
+      /*!
+       * Returns a picture or null if not supported by the container or tag or
+       * if none are present. A picture is chosen non-deterministically if several
+       * are present, with a preference for album covers, then artist images and
+       * thumbnails as the lowest preference, if applicable.
+       */
+      virtual ID3v2::AttachedPictureFrame *picture() const;
+
+	  typedef List<Picture*> _PictureList;
+	  //typedef const class _PictureList : public List<ID3v2::AttachedPictureFrame*>, public ReadonlyList<Picture*>
+	  //{
+	  //} &PictureList;
+	  
+      /*!
+       * Returns a list of all pictures found, which will be empty if not supported
+       * by the container or tag or if none are present.
+       */
+      PictureList pictures() const;
 
       /*!
        * Render the tag back to binary data, suitable to be written to disk.

@@ -37,3 +37,23 @@ Picture::~Picture()
 {
 
 }
+
+String Picture::description() const
+{
+	return String::null;
+}
+
+String Picture::typeName() const
+{
+	return String::null;
+}
+
+uint Picture::typeCode() const
+{
+	return 0;
+}
+
+uint Picture::typeCodeOrder() const
+{
+	return typeCode();
+}

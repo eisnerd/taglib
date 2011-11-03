@@ -54,7 +54,7 @@ public:
     string newname = copy.fileName();
 
     FLAC::File *f = new FLAC::File(newname.c_str());
-    List<FLAC::Picture *> lst = f->pictureList();
+    List<FLAC::Picture *> lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(1), lst.size());
 
     FLAC::Picture *pic = lst.front();
@@ -74,7 +74,7 @@ public:
     string newname = copy.fileName();
 
     FLAC::File *f = new FLAC::File(newname.c_str());
-    List<FLAC::Picture *> lst = f->pictureList();
+    List<FLAC::Picture *> lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(1), lst.size());
 
     FLAC::Picture *newpic = new FLAC::Picture();
@@ -90,7 +90,7 @@ public:
     f->save();
 
     f = new FLAC::File(newname.c_str());
-    lst = f->pictureList();
+    lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(2), lst.size());
 
     FLAC::Picture *pic = lst[0];
@@ -120,7 +120,7 @@ public:
     string newname = copy.fileName();
 
     FLAC::File *f = new FLAC::File(newname.c_str());
-    List<FLAC::Picture *> lst = f->pictureList();
+    List<FLAC::Picture *> lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(1), lst.size());
 
     FLAC::Picture *newpic = new FLAC::Picture();
@@ -137,7 +137,7 @@ public:
     f->save();
 
     f = new FLAC::File(newname.c_str());
-    lst = f->pictureList();
+    lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(1), lst.size());
 
     FLAC::Picture *pic = lst[0];
@@ -157,14 +157,14 @@ public:
     string newname = copy.fileName();
 
     FLAC::File *f = new FLAC::File(newname.c_str());
-    List<FLAC::Picture *> lst = f->pictureList();
+    List<FLAC::Picture *> lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(1), lst.size());
 
     f->removePictures();
     f->save();
 
     f = new FLAC::File(newname.c_str());
-    lst = f->pictureList();
+    lst = f->pictures();
     CPPUNIT_ASSERT_EQUAL(TagLib::uint(0), lst.size());
   }
 

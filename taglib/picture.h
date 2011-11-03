@@ -77,6 +77,31 @@ namespace TagLib {
 	 * not supported by the tag, 0x00 will be returned.
      */
     virtual uint typeCode() const;
+	
+    /*!
+     * Default sort order.
+	 * 
+	 * \see typeCodeOrder()
+     */
+    virtual bool operator < (Picture &other)
+    {
+        return typeCodeOrder() < other.typeCodeOrder();
+    }
+
+    virtual bool operator <= (Picture &other)
+    {
+        return typeCodeOrder() <= other.typeCodeOrder();
+    }
+
+    virtual bool operator >= (Picture &other)
+    {
+        return !(*this < other);
+    }
+
+    virtual bool operator > (Picture &other)
+    {
+        return !(*this <= other);
+    }
 
   protected:
     /*!
@@ -84,6 +109,11 @@ namespace TagLib {
      * through subclasses.
      */
     Picture();
+
+    /*!
+     * Default sort order representative.
+     */
+	virtual uint typeCodeOrder() const;
 
   private:
     Picture(const Picture &);

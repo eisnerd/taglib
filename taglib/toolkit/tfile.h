@@ -30,6 +30,8 @@
 #include "taglib.h"
 #include "tbytevector.h"
 #include "tiostream.h"
+#include "picture.h"
+#include "tlist.h"
 
 namespace TagLib {
 
@@ -82,6 +84,23 @@ namespace TagLib {
      * read then this will return a null pointer.
      */
     virtual AudioProperties *audioProperties() const = 0;
+
+    /*!
+     * Returns a picture or null if not supported by the container or tag or
+	 * if none are present. A picture is chosen non-deterministically if several
+	 * are present, with a preference for album covers, then artist images and
+	 * thumbnails as the lowest preference, if applicable.
+	*/
+    virtual Picture *picture() const;
+
+	typedef List<Picture*> _PictureList;
+	typedef const ReadonlyList<Picture*>::Type &PictureList;
+	
+    /*!
+     * Returns a list of all pictures found, which will be empty if not supported
+	 * by the container or tag or if none are present.
+	*/
+    virtual PictureList pictures() const;
 
     /*!
      * Save the file and its associated tags.  This should be reimplemented in
@@ -258,6 +277,7 @@ namespace TagLib {
     FilePrivate *d;
   };
 
+	extern File::_PictureList empty_pictures_list;
 }
 
 #endif

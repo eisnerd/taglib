@@ -28,6 +28,9 @@
 #include "tstring.h"
 #include "tdebug.h"
 
+#include "tag.h"
+
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -343,3 +346,25 @@ void File::setValid(bool valid)
   d->valid = valid;
 }
 
+Picture *File::picture() const
+{
+	Tag *t = tag();
+	if (t)
+		return t->picture();
+	else
+		return NULL;
+}
+
+File::_PictureList TagLib::empty_pictures_list;
+
+File::PictureList File::pictures() const
+{
+	Tag *t = tag();
+	if (t)
+		return t->pictures();
+	else
+	{
+		std::cerr << "No tag in File::pictures" << std::endl;
+		return empty_pictures_list;
+	}
+}

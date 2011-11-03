@@ -36,6 +36,7 @@
 
 #include "frames/textidentificationframe.h"
 #include "frames/commentsframe.h"
+#include "frames/attachedpictureframe.h"
 
 using namespace TagLib;
 using namespace ID3v2;
@@ -46,6 +47,7 @@ public:
   TagPrivate() : file(0), tagOffset(-1), extendedHeader(0), footer(0), paddingSize(0)
   {
     frameList.setAutoDelete(true);
+	pictureListValid = false;
   }
   ~TagPrivate()
   {
@@ -65,6 +67,15 @@ public:
 
   FrameListMap frameListMap;
   FrameList frameList;
+
+  _PictureList pictureList;
+  bool pictureListValid;
+  
+  void Invalidate()
+  {
+    pictureListValid = false;
+    pictureList.clear();
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,12 +314,14 @@ const FrameList &ID3v2::Tag::frameList(const ByteVector &frameID) const
 
 void ID3v2::Tag::addFrame(Frame *frame)
 {
+  d->Invalidate();
   d->frameList.append(frame);
   d->frameListMap[frame->frameID()].append(frame);
 }
 
 void ID3v2::Tag::removeFrame(Frame *frame, bool del)
 {
+  d->Invalidate();
   // remove the frame from the frame list
   FrameList::Iterator it = d->frameList.find(frame);
   d->frameList.erase(it);
@@ -324,9 +337,34 @@ void ID3v2::Tag::removeFrame(Frame *frame, bool del)
 
 void ID3v2::Tag::removeFrames(const ByteVector &id)
 {
+    d->Invalidate();
     FrameList l = d->frameListMap[id];
     for(FrameList::Iterator it = l.begin(); it != l.end(); ++it)
       removeFrame(*it, true);
+}
+
+ID3v2::AttachedPictureFrame *ID3v2::Tag::picture() const
+{
+	PictureList pictureList = pictures();
+	if (pictureList.isEmpty())
+		return NULL;
+	else
+		return dynamic_cast<ID3v2::AttachedPictureFrame *>(pictureList.front());
+}
+
+ID3v2::Tag::PictureList ID3v2::Tag::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    for(FrameList::ConstIterator it = d->frameList.begin(), end = d->frameList.end(); it != end; it++) {
+      ID3v2::AttachedPictureFrame *picture = dynamic_cast<ID3v2::AttachedPictureFrame *>(*it);
+      if(picture) {
+        d->pictureList.sortedInsert(picture);
+      }
+    }
+	d->pictureListValid = true;
+  }
+  return d->pictureList;
 }
 
 ByteVector ID3v2::Tag::render() const
@@ -336,6 +374,7 @@ ByteVector ID3v2::Tag::render() const
 
 void ID3v2::Tag::downgradeFrames(FrameList *frames, FrameList *newFrames) const
 {
+  d->Invalidate();
   const char *unsupportedFrames[] = {
     "ASPI", "EQU2", "RVA2", "SEEK", "SIGN", "TDRL", "TDTG",
     "TMOO", "TPRO", "TSOA", "TSOT", "TSST", "TSOP", 0
@@ -495,6 +534,7 @@ ByteVector ID3v2::Tag::render(int version) const
 
 void ID3v2::Tag::read()
 {
+  d->Invalidate();
   if(d->file && d->file->isOpen()) {
 
     d->file->seek(d->tagOffset);

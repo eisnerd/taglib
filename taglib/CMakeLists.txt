@@ -148,6 +148,7 @@ set(id3v2_SRCS
 
 set(frames_SRCS
   mpeg/id3v2/frames/attachedpictureframe.cpp
+  mpeg/id3v2/frames/attachedpictureframetypename.cpp
   mpeg/id3v2/frames/commentsframe.cpp
   mpeg/id3v2/frames/generalencapsulatedobjectframe.cpp
   mpeg/id3v2/frames/popularimeterframe.cpp
@@ -175,6 +176,7 @@ set(vorbis_SRCS
 set(flacs_SRCS
   flac/flacfile.cpp
   flac/flacpicture.cpp
+  flac/flacpicturetypename.cpp
   flac/flacproperties.cpp
   flac/flacmetadatablock.cpp
   flac/flacunknownmetadatablock.cpp

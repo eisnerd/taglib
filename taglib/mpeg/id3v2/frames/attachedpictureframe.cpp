@@ -95,6 +95,11 @@ AttachedPictureFrame::Type AttachedPictureFrame::type() const
   return d->type;
 }
 
+TagLib::uint AttachedPictureFrame::typeCode() const
+{
+  return (TagLib::uint)d->type;
+}
+
 void AttachedPictureFrame::setType(Type t)
 {
   d->type = t;
@@ -111,6 +116,11 @@ void AttachedPictureFrame::setDescription(const String &desc)
 }
 
 ByteVector AttachedPictureFrame::picture() const
+{
+  return d->data;
+}
+
+ByteVector AttachedPictureFrame::data() const
 {
   return d->data;
 }

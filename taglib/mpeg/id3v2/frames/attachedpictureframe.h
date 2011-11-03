@@ -29,6 +29,7 @@
 #include "id3v2frame.h"
 #include "id3v2header.h"
 #include "taglib_export.h"
+#include "picture.h"
 
 namespace TagLib {
 
@@ -43,7 +44,7 @@ namespace TagLib {
      * PNG format.
      */
 
-    class TAGLIB_EXPORT AttachedPictureFrame : public Frame
+    class TAGLIB_EXPORT AttachedPictureFrame : public Frame, public TagLib::Picture
     {
       friend class FrameFactory;
 
@@ -154,6 +155,18 @@ namespace TagLib {
       Type type() const;
 
       /*!
+       * Returns the name of the type of the image.
+       *
+	  */
+      String typeName() const;
+
+      /*!
+       * Returns the type of the image as a uint.
+       *
+	  */
+      uint typeCode() const;
+
+      /*!
        * Sets the type for the image.
        *
        * \see Type
@@ -191,6 +204,13 @@ namespace TagLib {
        * \see mimeType()
        */
       ByteVector picture() const;
+
+      /*!
+       * Returns the image data as a ByteVector.
+       *
+       * \see picture()
+       */
+      ByteVector data() const;
 
       /*!
        * Sets the image data to \a p.  \a p should be of the type specified in

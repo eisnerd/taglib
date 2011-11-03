@@ -149,6 +149,11 @@ void FLAC::Picture::setType(FLAC::Picture::Type type)
   d->type = type;
 }
 
+TagLib::uint FLAC::Picture::typeCode() const
+{
+  return (TagLib::uint)d->type;
+}
+
 String FLAC::Picture::mimeType() const
 {
   return d->mimeType;
@@ -219,3 +224,10 @@ void FLAC::Picture::setData(const ByteVector &data)
   d->data = data;
 }
 
+// Prefer main cover pictures over thumbnails
+TagLib::uint FLAC::Picture::typeCodeOrder() const
+{
+	TagLib::uint code = typeCode();
+	return code < 0x03 //FLAC::Picture::Type::FrontCover
+		? 0x15 + code : code;
+}

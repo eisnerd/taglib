@@ -50,7 +50,99 @@ namespace TagLib {
    * only \e then will the data be copied.
    */
 
+#ifdef LIST_COVARIANCE
+  template <class T> class ReadonlyList
+  { class Type {
+  public:
+#ifndef DO_NOT_DOCUMENT
+    typedef typename std::list<T>::iterator Iterator;
+    typedef typename std::list<T>::const_iterator ConstIterator;
+#endif
+
+    /*!
+     * Returns an STL style iterator to the beginning of the list.  See
+     * std::list::const_iterator for the semantics.
+     */
+    virtual Iterator begin() = 0;
+
+    /*!
+     * Returns an STL style constant iterator to the beginning of the list.  See
+     * std::list::iterator for the semantics.
+     */
+    virtual ConstIterator begin() const = 0;
+
+    /*!
+     * Returns an STL style iterator to the end of the list.  See
+     * std::list::iterator for the semantics.
+     */
+    virtual Iterator end() = 0;
+
+    /*!
+     * Returns an STL style constant iterator to the end of the list.  See
+     * std::list::const_iterator for the semantics.
+     */
+    virtual ConstIterator end() const = 0;
+
+    /*!
+     * Returns the number of elements in the list.
+     */
+    virtual uint size() const = 0;
+    virtual bool isEmpty() const = 0;
+
+    /*!
+     * Find the first occurrence of \a value.
+     */
+    virtual Iterator find(const T &value) = 0;
+
+    /*!
+     * Find the first occurrence of \a value.
+     */
+    virtual ConstIterator find(const T &value) const = 0;
+
+    /*!
+     * Returns true if the list contains \a value.
+     */
+    virtual bool contains(const T &value) const = 0;
+
+    /*!
+     * Returns a reference to the first item in the list.
+     */
+    virtual const T &front() const = 0;
+
+    /*!
+     * Returns a reference to the first item in the list.
+     */
+    virtual T &front() = 0;
+
+    /*!
+     * Returns a reference to the last item in the list.
+     */
+    virtual const T &back() const = 0;
+
+    /*!
+     * Returns a reference to the last item in the list.
+     */
+    virtual T &back() = 0;
+
+    /*!
+     * Returns a reference to item \a i in the list.
+     *
+     * \warning This method is slow.  Use iterators to loop through the list.
+     */
+    virtual T &operator[](uint i) = 0;
+
+    /*!
+     * Returns a const reference to item \a i in the list.
+     *
+     * \warning This method is slow.  Use iterators to loop through the list.
+     */
+    virtual const T &operator[](uint i) const = 0;
+  }; };
+  
+  template <class T> class List : public ReadonlyList<T>::Type
+#else
   template <class T> class List
+#endif
   {
   public:
 #ifndef DO_NOT_DOCUMENT
@@ -241,6 +333,14 @@ namespace TagLib {
     ListPrivate<T> *d;
 #endif
   };
+
+#ifndef LIST_COVARIANCE
+  template <class T> class ReadonlyList
+  {
+   public:
+	  typedef List<T> Type;
+  };
+#endif
 
 }
 

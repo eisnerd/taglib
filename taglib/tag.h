@@ -28,8 +28,7 @@
 
 #include "taglib_export.h"
 #include "tstring.h"
-#include "picture.h"
-#include "tlist.h"
+#include "tfile.h"
 
 namespace TagLib {
 
@@ -101,12 +100,14 @@ namespace TagLib {
 	*/
     virtual Picture *picture() const;
 
-
+	typedef File::_PictureList _PictureList;
+	typedef File::PictureList PictureList;
+	
     /*!
      * Returns a list of all pictures found, which will be empty if not supported
 	 * by the container or tag or if none are present.
 	*/
-    virtual List<Picture*> pictures() const;
+    virtual PictureList pictures() const;
 
     /*!
      * Sets the title to \a s.  If \a s is String::null then this value will be
