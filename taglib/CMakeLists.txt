@@ -284,6 +284,7 @@ set(tag_LIB_SRCS
   ${wavpack_SRCS} ${speex_SRCS} ${trueaudio_SRCS} ${riff_SRCS} ${aiff_SRCS} ${wav_SRCS}
   ${asf_SRCS} ${mp4_SRCS} ${mod_SRCS} ${s3m_SRCS} ${it_SRCS} ${xm_SRCS}
   tag.cpp
+  picture.cpp
   tagunion.cpp
   fileref.cpp
   audioproperties.cpp

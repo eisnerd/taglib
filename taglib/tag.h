@@ -28,6 +28,8 @@
 
 #include "taglib_export.h"
 #include "tstring.h"
+#include "picture.h"
+#include "tlist.h"
 
 namespace TagLib {
 
@@ -90,6 +92,21 @@ namespace TagLib {
      * return 0.
      */
     virtual uint track() const = 0;
+
+    /*!
+     * Returns a picture or null if not supported by the container or tag or
+	 * if none are present. A picture is chosen non-deterministically if several
+	 * are present, with a preference for album covers, then artist images and
+	 * thumbnails as the lowest preference, if applicable.
+	*/
+    virtual Picture *picture() const;
+
+
+    /*!
+     * Returns a list of all pictures found, which will be empty if not supported
+	 * by the container or tag or if none are present.
+	*/
+    virtual List<Picture*> pictures() const;
 
     /*!
      * Sets the title to \a s.  If \a s is String::null then this value will be

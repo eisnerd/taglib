@@ -31,12 +31,13 @@
 #include "tbytevector.h"
 #include "taglib_export.h"
 #include "flacmetadatablock.h"
+#include "picture.h"
 
 namespace TagLib {
 
   namespace FLAC {
 
-    class TAGLIB_EXPORT Picture : public MetadataBlock
+    class TAGLIB_EXPORT Picture : public MetadataBlock, public TagLib::Picture
     {
     public:
 
