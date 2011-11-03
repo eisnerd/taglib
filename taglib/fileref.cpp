@@ -160,6 +160,7 @@ StringList FileRef::defaultFileExtensions()
   l.append("wma");
   l.append("asf");
   l.append("aif");
+  l.append("aifc");
   l.append("aiff");
   l.append("wav");
   l.append("ape");
@@ -258,7 +259,7 @@ File *FileRef::create(FileName fileName, bool readAudioProperties,
       return new MP4::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(ext == "WMA" || ext == "ASF")
       return new ASF::File(fileName, readAudioProperties, audioPropertiesStyle);
-    if(ext == "AIF" || ext == "AIFF")
+    if(ext == "AIF" || ext == "AIFC" || ext == "AIFF")
       return new RIFF::AIFF::File(fileName, readAudioProperties, audioPropertiesStyle);
     if(ext == "WAV")
       return new RIFF::WAV::File(fileName, readAudioProperties, audioPropertiesStyle);
