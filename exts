@@ -1,0 +1,7 @@
+if diff \
+<(sed -n 's/.*append("\([^"]*\)").*/\L\1/p' ./taglib/fileref.cpp|sort -u) \
+<(grep --exclude=exts 'ext == "[^"]*"' -hor .|sed -n 's/ext == "\([^"]*\)"/\L\1/p'|sort -u); then
+	sed -n 's/.*append("\([^"]*\)").*/\L\1/p' ./taglib/fileref.cpp|sort -u
+else
+	echo Inconsistency detected
+fi

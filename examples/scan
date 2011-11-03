@@ -1,0 +1,8 @@
+exts=(m4a m4b aac wma mpa mpga wav aiff aif aifc flac ogg oga ape)
+for i in ${exts[@]}; do echo -n -name \'\*.$i\' -print0 -o\ ; done|head -c-4|
+	xargs find -L "$@"|
+	if [ $OSTYPE == cygwin ]; then
+		xargs -0 ./tagreader.exe
+	else
+		xargs -0 ./tagreader
+	fi # 2> /dev/null
