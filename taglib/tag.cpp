@@ -43,17 +43,20 @@ Tag::~Tag()
 
 }
 
-Picture *Tag::picture() const
+TagLib::Picture *Tag::picture() const
 {
-	return NULL;
+  PictureList pictureList = pictures();
+  if (pictureList.isEmpty())
+    return NULL;
+  else
+    return pictureList.front();
 }
 
 Tag::PictureList Tag::pictures() const
 {
-	std::cerr << "Default Tag::pictures implementation" << std::endl;
-	return empty_pictures_list;
+  return empty_pictures_list;
 }
-	
+
 bool Tag::isEmpty() const
 {
   return (title().isEmpty() &&

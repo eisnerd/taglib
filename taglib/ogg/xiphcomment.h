@@ -189,20 +189,13 @@ namespace TagLib {
             ~Picture();
             friend class XiphComment;
       };
-      
-      /*!
-       * Returns the preferred picture attached to the Xiph Comment. These may
-       * be XiphComment::Picture for raw base64 images or FLAC::Picture for
-       * a full base64 encoded METADATA_BLOCK_PICTURE.
-       */
-      TagLib::Picture *picture() const;
-      
+
       //typedef const class _PictureList : public List<Picture*>, public ReadonlyList<TagLib::Picture*>
       //{
       //} &PictureList;
       typedef List<TagLib::Picture*> _PictureList;
       typedef TagLib::Tag::PictureList PictureList;
-      
+
       /*!
        * Returns a list of pictures attached to the Xiph Comment.
        */

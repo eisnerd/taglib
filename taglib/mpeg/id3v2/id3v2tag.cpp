@@ -345,11 +345,7 @@ void ID3v2::Tag::removeFrames(const ByteVector &id)
 
 ID3v2::AttachedPictureFrame *ID3v2::Tag::picture() const
 {
-	PictureList pictureList = pictures();
-	if (pictureList.isEmpty())
-		return NULL;
-	else
-		return dynamic_cast<ID3v2::AttachedPictureFrame *>(pictureList.front());
+  return dynamic_cast<ID3v2::AttachedPictureFrame *>(TagLib::Tag::picture());
 }
 
 ID3v2::Tag::PictureList ID3v2::Tag::pictures() const

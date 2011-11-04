@@ -215,11 +215,7 @@ bool ASF::Tag::isEmpty() const
 
 ASF::Picture *ASF::Tag::picture() const
 {
-	PictureList pictureList = pictures();
-	if (pictureList.isEmpty())
-		return NULL;
-	else
-		return dynamic_cast<ASF::Picture *>(pictureList.front());
+  return dynamic_cast<ASF::Picture *>(TagLib::Tag::picture());
 }
 
 ASF::Tag::PictureList ASF::Tag::pictures() const

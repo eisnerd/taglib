@@ -275,15 +275,6 @@ String Ogg::XiphComment::Picture::mimeType() const
   return "image/";
 }
 
-TagLib::Picture *Ogg::XiphComment::picture() const
-{
-	PictureList pictureList = pictures();
-	if (pictureList.isEmpty())
-		return NULL;
-	else
-    return pictureList.front();
-}
-
 Ogg::XiphComment::PictureList Ogg::XiphComment::pictures() const
 {
   if (!d->pictureListValid)
