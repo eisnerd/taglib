@@ -45,6 +45,10 @@ extern "C" {
 #define BOOL int
 #endif
 
+#ifndef size_t
+#define size_t unsigned int
+#endif
+
 /*******************************************************************************
  * [ TagLib C Binding ]
  *
@@ -63,6 +67,12 @@ extern "C" {
 typedef struct { int dummy; } TagLib_File;
 typedef struct { int dummy; } TagLib_Tag;
 typedef struct { int dummy; } TagLib_AudioProperties;
+typedef struct _TagLib_Pictures {
+  // This one's actually not a dummy
+  const struct _TagLib_Pictures *real; // Though this is
+  unsigned int i;
+} TagLib_Pictures;
+typedef struct { int dummy; } TagLib_Picture;
 
 /*!
  * By default all strings coming into or out of TagLib's C API are in UTF8.
@@ -139,6 +149,56 @@ TAGLIB_C_EXPORT TagLib_Tag *taglib_file_tag(const TagLib_File *file);
  * will be freed automatically when the file is freed.
  */
 TAGLIB_C_EXPORT const TagLib_AudioProperties *taglib_file_audioproperties(const TagLib_File *file);
+
+/*!
+ * Returns the number of pictures to be found in this file or its tag.
+ */
+TAGLIB_C_EXPORT size_t taglib_file_picture_count(const TagLib_File *file);
+
+/*!
+ * Returns the main picture from the file or its tag, if any, or NULL otherwise.
+ * This will be freed automatically when the file is freed.
+ */
+TAGLIB_C_EXPORT const TagLib_Picture *taglib_file_picture(const TagLib_File *file);
+
+/*!
+ * Returns a, possibly empty, iterator for retrieving the pictures within this file
+ * or its tag. This will be freed automatically when the file is freed.
+ */
+TAGLIB_C_EXPORT TagLib_Pictures *taglib_file_pictures(const TagLib_File *file);
+
+/*!
+ * Returns the next picture for the given iterator or NULL for the end of the sequence.
+ * The iterator is also moved one position further through the sequence with each call.
+ * The picture objects will be freed automatically when the file is freed.
+ */
+TAGLIB_C_EXPORT const TagLib_Picture *taglib_pictures_next(TagLib_Pictures *pictures);
+
+/*!
+ * Returns the binary data of the picture.
+ */
+TAGLIB_C_EXPORT char *taglib_picture_data(const TagLib_Picture *picture);
+
+/*!
+ * Returns the MIME type string for the picture data.
+ */
+TAGLIB_C_EXPORT char *taglib_picture_mimetype(const TagLib_Picture *picture);
+
+/*!
+ * Returns the description text for the picture, or NULL if not supported by the container
+ * or tag format.
+ */
+TAGLIB_C_EXPORT char *taglib_picture_description(const TagLib_Picture *picture);
+
+/*!
+ * Returns the name of the type of picture.
+ */
+TAGLIB_C_EXPORT char *taglib_picture_typename(const TagLib_Picture *picture);
+
+/*!
+ * Returns the type of picture as an unsigned int.
+ */
+TAGLIB_C_EXPORT unsigned int taglib_picture_typecode(const TagLib_Picture *picture);
 
 /*!
  * Saves the \a file to disk.

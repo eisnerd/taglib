@@ -23,6 +23,7 @@
 #include "config.h"
 #endif
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <fileref.h>
 #include <tfile.h>
@@ -122,6 +123,75 @@ const TagLib_AudioProperties *taglib_file_audioproperties(const TagLib_File *fil
 {
   const File *f = reinterpret_cast<const File *>(file);
   return reinterpret_cast<const TagLib_AudioProperties *>(f->audioProperties());
+}
+
+const TagLib_Picture *taglib_file_picture(const TagLib_File *file)
+{
+  const File *f = reinterpret_cast<const File *>(file);
+  return reinterpret_cast<const TagLib_Picture *>(f->picture());
+}
+
+size_t taglib_file_picture_count(const TagLib_File *file)
+{
+  const File *f = reinterpret_cast<const File *>(file);
+  return f->pictures().size();
+}
+
+TagLib_Pictures *taglib_file_pictures(const TagLib_File *file)
+{
+  const File *f = reinterpret_cast<const File *>(file);
+  TagLib_Pictures *it = new TagLib_Pictures;
+    it->real = reinterpret_cast<const TagLib_Pictures *>(&f->pictures());
+    it->i = 0;
+  return it;
+}
+
+const TagLib_Picture *taglib_pictures_next(TagLib_Pictures *pictures)
+{
+  TagLib::File::PictureList l = *reinterpret_cast<const TagLib::File::_PictureList *>(pictures->real);
+  if (pictures->i < l.size())
+    return reinterpret_cast<const TagLib_Picture *>(l[pictures->i++]);
+  else
+    return NULL;
+}
+
+char *taglib_picture_data(const TagLib_Picture *picture)
+{
+  const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
+  return p->data().data();
+}
+
+char *taglib_picture_mimetype(const TagLib_Picture *picture)
+{
+  const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
+  char *s = ::strdup(p->mimeType().toCString(unicodeStrings));
+  if(stringManagementEnabled)
+    strings.append(s);
+  return s;
+}
+
+char *taglib_picture_description(const TagLib_Picture *picture)
+{
+  const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
+  char *s = ::strdup(p->description().toCString(unicodeStrings));
+  if(stringManagementEnabled)
+    strings.append(s);
+  return s;
+}
+
+char *taglib_picture_typename(const TagLib_Picture *picture)
+{
+  const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
+  char *s = ::strdup(p->typeName().toCString(unicodeStrings));
+  if(stringManagementEnabled)
+    strings.append(s);
+  return s;
+}
+
+unsigned int taglib_picture_typecode(const TagLib_Picture *picture)
+{
+  const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
+  return p->typeCode();
 }
 
 BOOL taglib_file_save(TagLib_File *file)
