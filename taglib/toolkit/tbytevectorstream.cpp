@@ -81,7 +81,7 @@ ByteVector ByteVectorStream::readBlock(ulong length)
 void ByteVectorStream::writeBlock(const ByteVector &data)
 {
   uint size = data.size();
-  if(d->position + size > length()) {
+  if(d->position + size - length() > 0) {
     truncate(d->position + size);
   }
   memcpy(d->data.data() + d->position, data.data(), size);
