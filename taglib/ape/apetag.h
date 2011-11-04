@@ -32,6 +32,7 @@
 #include "tstring.h"
 #include "taglib_export.h"
 
+#include "ogg/xiphcomment.h"
 #include "apeitem.h"
 
 namespace TagLib {
@@ -121,6 +122,26 @@ namespace TagLib {
        * use setItem() and removeItem().
        */
       const ItemListMap &itemListMap() const;
+
+      class Picture : public Ogg::XiphComment::Picture
+      {
+        protected:
+          Picture(ByteVector *data) // takes ownership
+            : Ogg::XiphComment::Picture(data)
+            {}
+          friend class Tag;
+      };
+      
+      //typedef const class _PictureList : public List<Picture*>, public ReadonlyList<TagLib::Picture*>
+      //{
+      //} &PictureList;
+      typedef List<TagLib::Picture*> _PictureList;
+      typedef TagLib::Tag::PictureList PictureList;
+      
+      /*!
+       * Returns a list of pictures attached to the APE Tag.
+       */
+      PictureList pictures() const;
 
       /*!
        * Removes the \a key item from the tag

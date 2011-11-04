@@ -34,10 +34,12 @@
 #include <tfile.h>
 #include <tstring.h>
 #include <tmap.h>
+#include <base64.h>
 
 #include "apetag.h"
 #include "apefooter.h"
 #include "apeitem.h"
+#include "flac/flacpicture.h"
 
 using namespace TagLib;
 using namespace APE;
@@ -45,7 +47,10 @@ using namespace APE;
 class APE::Tag::TagPrivate
 {
 public:
-  TagPrivate() : file(0), footerLocation(-1), tagLength(0) {}
+  TagPrivate() :
+    file(0), footerLocation(-1), tagLength(0),
+    pictureListValid(false)
+    {}
 
   File *file;
   long footerLocation;
@@ -54,6 +59,19 @@ public:
   Footer footer;
 
   ItemListMap itemListMap;
+
+  _PictureList pictureList;
+  bool pictureListValid;
+
+  void Invalidate()
+  {
+    pictureListValid = false;
+    for(_PictureList::ConstIterator it = pictureList.begin(), end = pictureList.end(); it != end; it++) {
+      if (*it)
+        delete *it;
+    }
+    pictureList.clear();
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +94,7 @@ APE::Tag::Tag(File *file, long footerLocation) : TagLib::Tag()
 
 APE::Tag::~Tag()
 {
+  d->Invalidate();
   delete d;
 }
 
@@ -182,6 +201,55 @@ APE::Footer *APE::Tag::footer() const
 const APE::ItemListMap& APE::Tag::itemListMap() const
 {
   return d->itemListMap;
+}
+
+APE::Tag::PictureList APE::Tag::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    const Item *i;
+
+    // For lack of contrary recommendations, we look for artwork
+    //  against the keys recommended for Vorbis Comments
+
+    // See http://wiki.xiph.org/index.php/VorbisComment#Cover_art
+    i = &d->itemListMap["METADATA_BLOCK_PICTURE"];
+    if (!i->isEmpty()) {
+      if (i->type() == APE::Item::Binary)
+        d->pictureList.sortedInsert(new FLAC::Picture(i->value()));
+      else if (i->type() == APE::Item::Text)
+      {
+        StringList l = i->values();
+        for(StringList::ConstIterator j = l.begin(), end = l.end(); j != end; j++) {
+          ByteVector *decoded = base64decode(*j);
+          if (decoded) {
+            d->pictureList.sortedInsert(new FLAC::Picture(*decoded));
+            delete decoded;
+          }
+        }
+      }
+    }
+
+    // See http://wiki.xiph.org/VorbisComment#Unofficial_COVERART_field_.28deprecated.29
+    i = &d->itemListMap["COVERART"];
+    if (!i->isEmpty()) {
+      if (i->type() == APE::Item::Binary)
+        d->pictureList.sortedInsert(new FLAC::Picture(i->value()));
+      else if (i->type() == APE::Item::Text)
+      {
+        StringList l = i->values();
+        for(StringList::ConstIterator j = l.begin(), end = l.end(); j != end; j++) {
+          ByteVector *decoded = base64decode(*j);
+          if (decoded) {
+            d->pictureList.append(new APE::Tag::Picture(decoded));
+          }
+        }
+      }
+    }
+
+    d->pictureListValid = true;
+  }
+  return d->pictureList;
 }
 
 void APE::Tag::removeItem(const String &key)
