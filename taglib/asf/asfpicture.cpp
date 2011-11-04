@@ -77,6 +77,11 @@ String ASF::Picture::mimeType() const
   return d->mimeType;
 }
 
+TagLib::uint ASF::Picture::typeCode() const
+{
+  return (TagLib::uint)d->type;
+}
+
 void ASF::Picture::setMimeType(const String &value)
 {
   d->mimeType = value;
@@ -102,7 +107,7 @@ void ASF::Picture::setDescription(const String &desc)
   d->description = desc;
 }
 
-ByteVector ASF::Picture::picture() const
+ByteVector ASF::Picture::data() const
 {
   return d->picture;
 }

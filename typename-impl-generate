@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find -name '*typename.sh'|while read i; do echo "Running $i"; (cd "$(dirname "$i")"; /bin/sh "$(basename "$i")"); done

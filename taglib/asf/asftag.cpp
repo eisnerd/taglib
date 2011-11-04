@@ -40,18 +40,35 @@ public:
   String comment;
   String rating;
   AttributeListMap attributeListMap;
+  
+  _PictureList pictureList;
+  bool pictureListValid;
+  
+  void Invalidate()
+  {
+    pictureListValid = false;
+    for(_PictureList::ConstIterator it = pictureList.begin(), end = pictureList.end(); it != end; it++) {
+      if (*it)
+        delete *it;
+    }
+    pictureList.clear();
+  }
 };
 
 ASF::Tag::Tag()
 : TagLib::Tag()
 {
   d = new TagPrivate;
+  d->pictureListValid = false;
 }
 
 ASF::Tag::~Tag()
 {
   if(d)
+  {
+    d->Invalidate();
     delete d;
+  }
 }
 
 String ASF::Tag::title() const
@@ -196,3 +213,26 @@ bool ASF::Tag::isEmpty() const
          d->attributeListMap.isEmpty();
 }
 
+ASF::Picture *ASF::Tag::picture() const
+{
+	PictureList pictureList = pictures();
+	if (pictureList.isEmpty())
+		return NULL;
+	else
+		return dynamic_cast<ASF::Picture *>(pictureList.front());
+}
+
+ASF::Tag::PictureList ASF::Tag::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    if (d->attributeListMap.contains("WM/Picture")) {
+      ASF::AttributeList l = d->attributeListMap["WM/Picture"];
+      for(ASF::AttributeList::ConstIterator i = l.begin(), end = l.end(); i != end; i++) {
+        d->pictureList.sortedInsert(new ASF::Picture(i->toPicture()));
+      }
+    }
+    d->pictureListValid = true;
+  }
+  return d->pictureList;
+}

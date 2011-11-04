@@ -158,6 +158,26 @@ namespace TagLib {
        * This is the most powerfull structure for accessing the items of the tag.
        */
       AttributeListMap &attributeListMap();
+        
+      /*!
+       * Returns a picture or null if not supported by the container or tag or
+       * if none are present. A picture is chosen non-deterministically if several
+       * are present, with a preference for album covers, then artist images and
+       * thumbnails as the lowest preference, if applicable.
+       */
+      virtual ASF::Picture *picture() const;
+
+      //typedef const class _PictureList : public List<ASF::Picture*>, public ReadonlyList<TagLib::Picture*>
+      //{
+      //} &PictureList;
+      typedef Tag::_PictureList _PictureList;
+      typedef Tag::PictureList PictureList;
+      
+      /*!
+       * Returns a list of all pictures found, which will be empty if not supported
+       * by the container or tag or if none are present.
+       */
+      PictureList pictures() const;
 
       /*!
        * Removes the \a key attribute from the tag

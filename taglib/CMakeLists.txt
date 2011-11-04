@@ -230,6 +230,7 @@ set(asf_SRCS
   asf/asfproperties.cpp
   asf/asfattribute.cpp
   asf/asfpicture.cpp
+  asf/asfpicturetypename.cpp
 )
 
 set(riff_SRCS

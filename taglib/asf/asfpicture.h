@@ -30,6 +30,7 @@
 #include "tbytevector.h"
 #include "taglib_export.h"
 #include "attachedpictureframe.h"
+#include "picture.h"
 
 namespace TagLib
 {
@@ -46,7 +47,7 @@ namespace TagLib
      * \see Attribute::toPicture()
      * \see Attribute::Attribute(const Picture& picture)
      */
-    class TAGLIB_EXPORT Picture {
+    class TAGLIB_EXPORT Picture : public TagLib::Picture {
     public:
 
       /*!
@@ -149,6 +150,18 @@ namespace TagLib
       Type type() const;
 
       /*!
+       * Returns the name of the type of the image.
+       *
+       */
+      String typeName() const;
+
+      /*!
+       * Returns the type of the image as a uint.
+       *
+       */
+      uint typeCode() const;
+
+      /*!
        * Sets the type for the image.
        *
        * \see Type
@@ -179,7 +192,7 @@ namespace TagLib
        * \see setPicture()
        * \see mimeType()
        */
-      ByteVector picture() const;
+      ByteVector data() const;
 
       /*!
        * Sets the image data to \a p.  \a p should be of the type specified in
