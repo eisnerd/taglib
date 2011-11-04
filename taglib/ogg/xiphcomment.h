@@ -182,7 +182,6 @@ namespace TagLib {
         public:
             ByteVector data() const;
             String mimeType() const;
-            String typeName() const;
             
         protected:
             ByteVector &_data;

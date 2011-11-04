@@ -45,7 +45,7 @@ String Picture::description() const
 
 String Picture::typeName() const
 {
-	return String::null;
+	return "Other";
 }
 
 uint Picture::typeCode() const

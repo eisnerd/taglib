@@ -275,11 +275,6 @@ String Ogg::XiphComment::Picture::mimeType() const
   return "image/";
 }
 
-String Ogg::XiphComment::Picture::typeName() const
-{
-  return "Other";
-}
-
 TagLib::Picture *Ogg::XiphComment::picture() const
 {
 	PictureList pictureList = pictures();

@@ -68,7 +68,7 @@ namespace TagLib {
 
     /*!
      * Returns the name of the picture type; if picture types are
-	 * not supported by the tag, String::null will be returned.
+	 * not supported by the tag, "Other" will be returned.
      */
     virtual String typeName() const;
 
