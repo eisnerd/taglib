@@ -29,12 +29,13 @@
 #include "tlist.h"
 #include "tbytevector.h"
 #include "taglib_export.h"
+#include "picture.h"
 
 namespace TagLib {
 
   namespace MP4 {
 
-    class TAGLIB_EXPORT CoverArt
+    class TAGLIB_EXPORT CoverArt : public TagLib::Picture
     {
     public:
       /*!
@@ -55,7 +56,13 @@ namespace TagLib {
       Format format() const;
 
       //! The image data
-      ByteVector data() const;
+      virtual ByteVector data() const;
+      
+      /*!
+       * Returns the mime type of the image.  This should in most cases be
+       * "image/png" or "image/jpeg".
+       */
+      virtual String mimeType() const;
 
     private:
       class CoverArtPrivate;

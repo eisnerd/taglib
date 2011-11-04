@@ -38,11 +38,24 @@ using namespace TagLib;
 class MP4::Tag::TagPrivate
 {
 public:
-  TagPrivate() : file(0), atoms(0) {}
+  TagPrivate() : file(0), atoms(0), pictureListValid(false) {}
   ~TagPrivate() {}
   TagLib::File *file;
   Atoms *atoms;
   ItemListMap items;
+  
+  _PictureList pictureList;
+  bool pictureListValid;
+  
+  void Invalidate()
+  {
+    pictureListValid = false;
+    for(_PictureList::ConstIterator it = pictureList.begin(), end = pictureList.end(); it != end; it++) {
+      if (*it)
+        delete *it;
+    }
+    pictureList.clear();
+  }
 };
 
 MP4::Tag::Tag()
@@ -102,6 +115,7 @@ MP4::Tag::Tag(TagLib::File *file, MP4::Atoms *atoms)
 
 MP4::Tag::~Tag()
 {
+  d->Invalidate();
   delete d;
 }
 
@@ -708,3 +722,32 @@ MP4::Tag::itemListMap()
   return d->items;
 }
 
+MP4::CoverArt *
+MP4::Tag::picture() const
+{
+	PictureList pictureList = pictures();
+	if (pictureList.isEmpty())
+		return NULL;
+	else
+		return dynamic_cast<MP4::CoverArt *>(pictureList.front());
+}
+
+MP4::Tag::PictureList
+MP4::Tag::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    if (d->items.contains("covr")) {
+      // If the covariance code could be sorted out, we'd only have to make CoverArtList
+      //  implement ReadonlyList<CoverArt*>::Type insteading of duplicating into a new list.
+      MP4::CoverArtList l = d->items["covr"].toCoverArtList();
+      for(MP4::CoverArtList::Iterator i = l.begin(), end = l.end(); i != end; i++) {
+        // This has the same effect as sortedInsert as the sorting will be on typeCodeOrder,
+        //  which is unsupported and always 0.
+        d->pictureList.append(new MP4::CoverArt(*i));
+      }
+    }
+    d->pictureListValid = true;
+  }
+  return d->pictureList;
+}

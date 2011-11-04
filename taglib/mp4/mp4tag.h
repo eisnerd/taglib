@@ -34,6 +34,7 @@
 #include "taglib_export.h"
 #include "mp4atom.h"
 #include "mp4item.h"
+#include "mp4coverart.h"
 
 namespace TagLib {
 
@@ -66,6 +67,26 @@ namespace TagLib {
         void setTrack(uint value);
 
         ItemListMap &itemListMap();
+        
+        /*!
+         * Returns a picture or null if not supported by the container or tag or
+         * if none are present. A picture is chosen non-deterministically if several
+         * are present, with a preference for album covers, then artist images and
+         * thumbnails as the lowest preference, if applicable.
+         */
+        virtual CoverArt *picture() const;
+
+        //typedef const class _PictureList : public List<CoverArt*>, public ReadonlyList<Picture*>
+        //{
+        //} &PictureList;
+        typedef Tag::_PictureList _PictureList;
+        typedef Tag::PictureList PictureList;
+      
+        /*!
+         * Returns a list of all pictures found, which will be empty if not supported
+         * by the container or tag or if none are present.
+         */
+        PictureList pictures() const;
 
     private:
         TagLib::ByteVectorList parseData(Atom *atom, TagLib::File *file, int expectedFlags = -1, bool freeForm = false);

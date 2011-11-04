@@ -84,3 +84,13 @@ MP4::CoverArt::data() const
   return d->data;
 }
 
+String
+MP4::CoverArt::mimeType() const
+{
+  switch(d->format)
+  {
+    case JPEG: return "image/jpeg";
+    case PNG:  return "image/png";
+    default:   return "image/";
+  }
+}
