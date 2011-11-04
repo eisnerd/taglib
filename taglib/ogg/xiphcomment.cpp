@@ -25,17 +25,35 @@
 
 #include <tbytevector.h>
 #include <tdebug.h>
+#include <base64.h>
 
 #include <xiphcomment.h>
+#include <flac/flacpicture.h>
 
 using namespace TagLib;
 
 class Ogg::XiphComment::XiphCommentPrivate
 {
 public:
+  XiphCommentPrivate() {
+    pictureListValid = false;
+  }
   FieldListMap fieldListMap;
   String vendorID;
   String commentField;
+
+  _PictureList pictureList;
+  bool pictureListValid;
+  
+  void Invalidate()
+  {
+    pictureListValid = false;
+    for(_PictureList::ConstIterator it = pictureList.begin(), end = pictureList.end(); it != end; it++) {
+      if (*it)
+        delete *it;
+    }
+    pictureList.clear();
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,17 +62,18 @@ public:
 
 Ogg::XiphComment::XiphComment() : TagLib::Tag()
 {
-  d = new XiphCommentPrivate;
+  d = new XiphCommentPrivate();
 }
 
 Ogg::XiphComment::XiphComment(const ByteVector &data) : TagLib::Tag()
 {
-  d = new XiphCommentPrivate;
+  d = new XiphCommentPrivate();
   parse(data);
 }
 
 Ogg::XiphComment::~XiphComment()
 {
+  d->Invalidate();
   delete d;
 }
 
@@ -220,6 +239,92 @@ void Ogg::XiphComment::removeField(const String &key, const String &value)
 bool Ogg::XiphComment::contains(const String &key) const
 {
   return d->fieldListMap.contains(key) && !d->fieldListMap[key].isEmpty();
+}
+
+Ogg::XiphComment::Picture::Picture(ByteVector *data)
+  : _data(*data)
+{ }
+  
+Ogg::XiphComment::Picture::~Picture()
+{
+  delete &_data;
+}
+
+ByteVector Ogg::XiphComment::Picture::data() const
+{
+  return _data;
+}
+
+String Ogg::XiphComment::Picture::mimeType() const
+{
+  ByteVector jpg(2,0xff); jpg[1] = 0xd8;
+  if (_data.startsWith(jpg) && (jpg[1] = 0xd9) && _data.endsWith(jpg))
+    return "image/jpeg";
+
+  if (_data.startsWith("\211PNG\r\n\032\n"))
+    return "image/png";
+
+  ByteVector gif("GIF89a");
+  if (_data.startsWith(gif) || ((gif[4] = '7') && _data.startsWith(gif)))
+    return "image/gif";
+
+  ByteVector bmp(2,0x42); bmp[1] = 0x4D;
+  if (_data.startsWith(bmp))
+    return "image/bmp";
+
+  return "image/";
+}
+
+String Ogg::XiphComment::Picture::typeName() const
+{
+  return "Other";
+}
+
+TagLib::Picture *Ogg::XiphComment::picture() const
+{
+	PictureList pictureList = pictures();
+	if (pictureList.isEmpty())
+		return NULL;
+	else
+    return pictureList.front();
+}
+
+Ogg::XiphComment::PictureList Ogg::XiphComment::pictures() const
+{
+  if (!d->pictureListValid)
+  {
+    const StringList *l;
+    // See http://wiki.xiph.org/index.php/VorbisComment#Cover_art
+    l = &d->fieldListMap["METADATA_BLOCK_PICTURE"];
+    for(StringList::ConstIterator j = l->begin(), end = l->end(); j != end; j++) {
+      ByteVector *decoded = base64decode(*j);
+      if (decoded) {
+        d->pictureList.sortedInsert(new FLAC::Picture(*decoded));
+        delete decoded;
+      }
+    }
+    // See http://wiki.xiph.org/VorbisComment#Unofficial_COVERART_field_.28deprecated.29
+    l = &d->fieldListMap["COVERART"];
+    for(StringList::ConstIterator j = l->begin(), end = l->end(); j != end; j++) {
+      ByteVector *decoded = base64decode(*j);
+      if (decoded) {
+        d->pictureList.append(new Ogg::XiphComment::Picture(decoded));
+      }
+    }
+    
+    /*
+    for(FieldListMap::ConstIterator i = d->fieldListMap.begin(), end = d->fieldListMap.end(); i != end; i++) {
+      for(StringList::ConstIterator j = i->second.begin(), end = i->second.end(); j != end; j++) {
+        Picture *picture = dynamic_cast<Picture *>(*j);
+        if(picture) {
+          d->pictureList.sortedInsert(picture);
+        }
+      }
+    }
+    */
+	d->pictureListValid = true;
+  }
+  return d->pictureList;
 }
 
 ByteVector Ogg::XiphComment::render() const

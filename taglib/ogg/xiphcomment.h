@@ -169,6 +169,47 @@ namespace TagLib {
       bool contains(const String &key) const;
 
       /*!
+       * Implements the unofficial method of embedding picture into
+       * Vorbis Comments, in which a raw base64 PNG or JPEG is given as
+       * the field value, with no descriptive data.
+       *
+       * See http://wiki.xiph.org/VorbisComment#Unofficial_COVERART_field_.28deprecated.29
+       *      which recommends defaults for the unspecified data c.f. FLAC-
+       *      style picture blocks.
+       */
+      class Picture : public TagLib::Picture
+      {
+        public:
+            ByteVector data() const;
+            String mimeType() const;
+            String typeName() const;
+            
+        protected:
+            ByteVector &_data;
+            Picture(ByteVector *data); // takes ownership
+            ~Picture();
+            friend class XiphComment;
+      };
+      
+      /*!
+       * Returns the preferred picture attached to the Xiph Comment. These may
+       * be XiphComment::Picture for raw base64 images or FLAC::Picture for
+       * a full base64 encoded METADATA_BLOCK_PICTURE.
+       */
+      TagLib::Picture *picture() const;
+      
+      //typedef const class _PictureList : public List<Picture*>, public ReadonlyList<TagLib::Picture*>
+      //{
+      //} &PictureList;
+      typedef List<TagLib::Picture*> _PictureList;
+      typedef TagLib::Tag::PictureList PictureList;
+      
+      /*!
+       * Returns a list of pictures attached to the Xiph Comment.
+       */
+      PictureList pictures() const;
+
+      /*!
        * Renders the comment to a ByteVector suitable for inserting into a file.
        */
       ByteVector render() const; // BIC: remove and merge with below
