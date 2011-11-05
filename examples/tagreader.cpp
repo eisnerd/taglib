@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
       cout << "pictures- \"" << f.file()->pictures().size()   << "\"" << endl;
       TagLib::File::PictureList l = f.file()->pictures();
       for (TagLib::File::_PictureList::ConstIterator i = l.begin(), end = l.end(); i != end; i++) {
-        cout << "\t" << (*i)->typeName() << ' ' << (*i)->mimeType() << endl;
+        cout << "\t" << (*i)->typeName() << ' ' << (*i)->mimeType() << ' ' << (*i)->base64data().size() << endl;
       }
       
       cout << "pictures- \"" << tag->pictures().size()   << "\"" << endl;

@@ -23,6 +23,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <tag_c.h>
 
 #ifndef FALSE
@@ -65,8 +66,9 @@ int main(int argc, char *argv[])
     printf(" pictures: \"%i\"\n", taglib_file_picture_count(file));
     pictures = taglib_file_pictures(file);
     while ((picture = taglib_pictures_next(pictures)))
-      printf("           %s %s\n", taglib_picture_typename(picture), taglib_picture_mimetype(picture));
-	
+    {
+      printf("           %s %s %i\n", taglib_picture_typename(picture), taglib_picture_mimetype(picture), strlen(taglib_picture_base64data(picture)));
+    }
 
     if(properties != NULL) {
       seconds = taglib_audioproperties_length(properties) % 60;

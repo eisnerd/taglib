@@ -179,7 +179,11 @@ TAGLIB_C_DECL
 char *taglib_picture_base64data(const TagLib_Picture *picture)
 {
   const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
-  return p->base64data().data();
+  ByteVector d = p->base64data();
+  char *s = ::strndup(d.data(), d.size());
+  if(stringManagementEnabled)
+    strings.append(s);
+  return s;
 }
 
 TAGLIB_C_DECL
