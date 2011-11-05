@@ -79,7 +79,7 @@ ByteVector *base64encode(const ByteVector &src)
 		/* Encode block */
 		switch (i % 3) {
 			case 0:
-				encoded[j++] = b64_encode_table[src[i] >> 2];
+				encoded[j++] = b64_encode_table[src[i] >> 2 & 077];
 				encoded[j++] = b64_encode_table[((src[i] & 0x03) << 4) |
 				                                ((src[i + 1] & 0xF0) >> 4)];
 				break;
