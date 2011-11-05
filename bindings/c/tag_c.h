@@ -35,10 +35,13 @@ extern "C" {
 #else
 #define TAGLIB_C_EXPORT __declspec(dllimport)
 #endif
+#define TAGLIB_C_DECL   __declspec(dllexport)
 #elif defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 1)
 #define TAGLIB_C_EXPORT __attribute__ ((visibility("default")))
+#define TAGLIB_C_DECL
 #else
 #define TAGLIB_C_EXPORT
+#define TAGLIB_C_DECL
 #endif
 
 #ifndef BOOL

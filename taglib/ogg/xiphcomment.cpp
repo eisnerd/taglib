@@ -257,8 +257,8 @@ ByteVector Ogg::XiphComment::Picture::data() const
 
 String Ogg::XiphComment::Picture::mimeType() const
 {
-  ByteVector jpg(2,0xff); jpg[1] = 0xd8;
-  if (_data.startsWith(jpg) && (jpg[1] = 0xd9) && _data.endsWith(jpg))
+  ByteVector jpg("\xff\xd8");
+  if (_data.startsWith(jpg) && (jpg[1] = '\xd9') && _data.endsWith(jpg))
     return "image/jpeg";
 
   if (_data.startsWith("\211PNG\r\n\032\n"))
@@ -268,7 +268,7 @@ String Ogg::XiphComment::Picture::mimeType() const
   if (_data.startsWith(gif) || ((gif[4] = '7') && _data.startsWith(gif)))
     return "image/gif";
 
-  ByteVector bmp(2,0x42); bmp[1] = 0x4D;
+  ByteVector bmp("\x42\x4D");
   if (_data.startsWith(bmp))
     return "image/bmp";
 

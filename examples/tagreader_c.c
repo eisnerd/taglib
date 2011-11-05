@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
   TagLib_File *file;
   TagLib_Tag *tag;
   const TagLib_AudioProperties *properties;
+  TagLib_Pictures *pictures;
+  const TagLib_Picture  *picture;
 
   taglib_set_strings_unicode(FALSE);
 
@@ -61,8 +63,7 @@ int main(int argc, char *argv[])
       printf("    genre: \"%s\"\n", taglib_tag_genre(tag));
     }
     printf(" pictures: \"%i\"\n", taglib_file_picture_count(file));
-    TagLib_Pictures *pictures = taglib_file_pictures(file);
-    const TagLib_Picture  *picture;
+    pictures = taglib_file_pictures(file);
     while ((picture = taglib_pictures_next(pictures)))
       printf("           %s %s\n", taglib_picture_typename(picture), taglib_picture_mimetype(picture));
 	
