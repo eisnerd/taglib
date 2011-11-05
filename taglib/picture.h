@@ -56,6 +56,11 @@ namespace TagLib {
     virtual ByteVector data() const = 0;
 
     /*!
+     * Returns the picture content encoded as a base64 string
+     */
+    virtual ByteVector base64data() const;
+
+    /*!
      * Returns the MIME type of the picture content.
      */
     virtual String mimeType() const = 0;
@@ -118,6 +123,7 @@ namespace TagLib {
   private:
     Picture(const Picture &);
     Picture &operator=(const Picture &);
+    mutable ByteVector *d;
   };
 }
 

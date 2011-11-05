@@ -183,6 +183,11 @@ TAGLIB_C_EXPORT const TagLib_Picture *taglib_pictures_next(TagLib_Pictures *pict
 TAGLIB_C_EXPORT char *taglib_picture_data(const TagLib_Picture *picture);
 
 /*!
+ * Returns the binary data of the picture, base64 encoded.
+ */
+TAGLIB_C_EXPORT char *taglib_picture_base64data(const TagLib_Picture *picture);
+
+/*!
  * Returns the MIME type string for the picture data.
  */
 TAGLIB_C_EXPORT char *taglib_picture_mimetype(const TagLib_Picture *picture);

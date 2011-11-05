@@ -24,18 +24,33 @@
  *   http://www.mozilla.org/MPL/                                           *
  ***************************************************************************/
 
+#include "base64.h"
+
 #include "picture.h"
 
 using namespace TagLib;
 
 Picture::Picture()
+  : d(0)
 {
 
 }
 
 Picture::~Picture()
 {
+  if (d)
+    delete d;
+}
 
+ByteVector Picture::base64data() const
+{
+  if (d)
+    delete d;
+  d = base64encode(data());
+  if (d)
+    return *d;
+  else
+    return "";
 }
 
 String Picture::description() const
