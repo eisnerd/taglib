@@ -73,6 +73,8 @@ namespace TagLib {
     virtual void setTrack(uint i);
     virtual bool isEmpty() const;
 
+    virtual Tag::PictureList pictures() const;
+
     template <class T> T *access(int index, bool create)
     {
       if(!create || tag(index))

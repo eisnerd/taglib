@@ -183,3 +183,14 @@ bool TagUnion::isEmpty() const
   return true;
 }
 
+Tag::PictureList TagUnion::pictures() const
+{
+  const Tag::_PictureList *v;
+  if(tag(0) && !(v = &tag(0)->pictures())->isEmpty())
+    return *v;
+  if(tag(1) && !(v = &tag(1)->pictures())->isEmpty())
+    return *v;
+  if(tag(2) && !(v = &tag(2)->pictures())->isEmpty())
+    return *v;
+  return empty_pictures_list;
+}
