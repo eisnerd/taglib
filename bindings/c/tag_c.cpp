@@ -43,6 +43,20 @@
 
 #include "tag_c.h"
 
+#ifndef strndup
+extern "C" char *strndup (const char *s, size_t n)
+{
+  size_t len = strnlen (s, n);
+  char *str = (char *) malloc (len + 1);
+
+  if (str == NULL)
+    return NULL;
+
+  str[len] = '\0';
+  return (char *) memcpy (str, s, len);
+}
+#endif
+
 using namespace TagLib;
 
 static List<char *> strings;
