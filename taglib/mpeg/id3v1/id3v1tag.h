@@ -150,6 +150,7 @@ namespace TagLib {
       virtual void setYear(uint i);
       virtual void setTrack(uint i);
 
+
       /*!
        * Sets the string handler that decides how the ID3v1 data will be
        * converted to and from binary data.

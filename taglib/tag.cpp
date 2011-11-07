@@ -24,7 +24,7 @@
  ***************************************************************************/
 
 #include "tag.h"
-#include <iostream>
+#include "tdebug.h"
 
 using namespace TagLib;
 
@@ -54,6 +54,7 @@ TagLib::Picture *Tag::picture() const
 
 Tag::PictureList Tag::pictures() const
 {
+  debug("default pictures");
   return empty_pictures_list;
 }
 

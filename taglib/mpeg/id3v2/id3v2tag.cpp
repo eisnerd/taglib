@@ -350,6 +350,7 @@ ID3v2::AttachedPictureFrame *ID3v2::Tag::picture() const
 
 ID3v2::Tag::PictureList ID3v2::Tag::pictures() const
 {
+  debug("id3v2 pictures");
   if (!d->pictureListValid)
   {
     for(FrameList::ConstIterator it = d->frameList.begin(), end = d->frameList.end(); it != end; it++) {

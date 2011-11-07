@@ -269,10 +269,11 @@ namespace TagLib {
        */
       virtual ID3v2::AttachedPictureFrame *picture() const;
 
-	  typedef List<Picture*> _PictureList;
-	  //typedef const class _PictureList : public List<ID3v2::AttachedPictureFrame*>, public ReadonlyList<Picture*>
-	  //{
-	  //} &PictureList;
+      //typedef const class _PictureList : public List<ID3v2::AttachedPictureFrame*>, public ReadonlyList<Picture*>
+      //{
+      //} &PictureList;
+      typedef Tag::_PictureList _PictureList;
+      typedef Tag::PictureList PictureList;
 	  
       /*!
        * Returns a list of all pictures found, which will be empty if not supported
