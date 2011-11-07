@@ -26,6 +26,6 @@ TagLib::ByteVector *base64decode(const TagLib::String &buf);
  *
  * If |retlen| is not NULL, it is set to the length of the returned string
  * (minus the NUL-terminator) on successful return. */
-TagLib::ByteVector *base64encode(const TagLib::ByteVector &);
+TagLib::ByteVector *base64encode(const TagLib::ByteVector &, bool = false);
 
 #endif /* BASE64_H */

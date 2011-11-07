@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "base64.h"
 
 // From github.com/msanders/autopy and modified for a taglib toolkit-style interface
@@ -65,43 +66,91 @@ ByteVector *base64decode(const String &src)
 	return &decoded; /* Must be free()'d by caller */
 }
 
-ByteVector *base64encode(const ByteVector &src)
+ByteVector *base64encode(const ByteVector &in, bool insertLFs)
 {
-  if (src.isEmpty())
-    return NULL;
+/*
+   Derived from the WebKit WebCore implementation:
 
-  size_t i, j, buflen = src.size();
-	const size_t maxlen = (((buflen + 3) & ~3)) * 4;
-	ByteVector &encoded = *new ByteVector(maxlen + 1);
+   Copyright (C) 2000-2001 Dawit Alemayehu <adawit@kde.org>
+   Copyright (C) 2006 Alexey Proskuryakov <ap@webkit.org>
+   Copyright (C) 2007, 2008 Apple Inc. All rights reserved.
 
-	j = 0;
-	for (i = 0; i < buflen + 1; ++i) {
-		/* Encode block */
-		switch (i % 3) {
-			case 0:
-				encoded[j++] = b64_encode_table[src[i] >> 2 & 077];
-				encoded[j++] = b64_encode_table[((src[i] & 0x03) << 4) |
-				                                ((src[i + 1] & 0xF0) >> 4)];
-				break;
-			case 1:
-				encoded[j++] = b64_encode_table[((src[i] & 0x0F) << 2) |
-				                                ((src[i + 1] & 0xC0) >> 6)];
-				break;
-			case 2:
-				encoded[j++] = b64_encode_table[(src[i] & 0x3F)];
-				break;
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License (LGPL)
+   version 2 as published by the Free Software Foundation.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public
+   License along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+   This code is based on the java implementation in HTTPClient
+   package by Ronald Tschalär Copyright (C) 1996-1999.
+*/
+
+	if (in.isEmpty())
+		return NULL;
+
+	// If the input string is pathologically large, just return nothing.
+	// Note: Keep this in sync with the "out_len" computation below.
+	// Rather than being perfectly precise, this is a bit conservative.
+	const unsigned maxInputBufferSize = UINT_MAX / 77 * 76 / 4 * 3 - 2;
+	if (in.size() > maxInputBufferSize)
+		return NULL;
+
+	unsigned sidx = 0;
+	unsigned didx = 0;
+	const char* data = in.data();
+	const unsigned len = in.size();
+
+	unsigned out_len = ((len + 2) / 3) * 4;
+
+	// Deal with the 76 character per line limit specified in RFC 2045.
+	insertLFs = (insertLFs && out_len > 76);
+	if (insertLFs)
+		out_len += ((out_len - 1) / 76);
+
+	int count = 0;
+	ByteVector &out = *new ByteVector(out_len + 1);
+
+	// 3-byte to 4-byte conversion + 0-63 to ascii printable conversion
+	if (len > 1) {
+		while (sidx < len - 2) {
+			if (insertLFs) {
+				if (count && (count % 76) == 0)
+					out[didx++] = '\n';
+				count += 4;
+			}
+			out[didx++] = b64_encode_table[(data[sidx] >> 2) & 077];
+			out[didx++] = b64_encode_table[((data[sidx + 1] >> 4) & 017) | ((data[sidx] << 4) & 077)];
+			out[didx++] = b64_encode_table[((data[sidx + 2] >> 6) & 003) | ((data[sidx + 1] << 2) & 077)];
+			out[didx++] = b64_encode_table[data[sidx + 2] & 077];
+			sidx += 3;
 		}
 	}
 
-	/* Add padding if necessary */
-	if ((j % 4) != 0) {
-		const size_t with_padding = ((j + 3) & ~3); /* Align to 4 bytes */
-		do {
-			encoded[j++] = '=';
-		} while (j < with_padding);
+	if (sidx < len) {
+		if (insertLFs && (count > 0) && (count % 76) == 0)
+			out[didx++] = '\n';
+
+		out[didx++] = b64_encode_table[(data[sidx] >> 2) & 077];
+		if (sidx < len - 1) {
+			out[didx++] = b64_encode_table[((data[sidx + 1] >> 4) & 017) | ((data[sidx] << 4) & 077)];
+			out[didx++] = b64_encode_table[(data[sidx + 1] << 2) & 077];
+		} else
+			out[didx++] = b64_encode_table[(data[sidx] << 4) & 077];
 	}
 
-  
-  encoded.resize(j); /* Assumes the resize() implementation returns *this, rather than allocating a new ByteVector */
-	return &encoded; /* Must be free()'d by caller */
+	// Add padding
+	while (didx < out.size()) {
+		out[didx] = '=';
+		didx++;
+	}
+
+	out[out_len] = '\0';
+	return &out; /* Must be free()'d by caller */
 }
