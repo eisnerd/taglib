@@ -43,20 +43,6 @@
 
 #include "tag_c.h"
 
-#ifndef strndup
-extern "C" char *strndup (const char *s, size_t n)
-{
-  size_t len = strnlen (s, n);
-  char *str = (char *) malloc (len + 1);
-
-  if (str == NULL)
-    return NULL;
-
-  str[len] = '\0';
-  return (char *) memcpy (str, s, len);
-}
-#endif
-
 using namespace TagLib;
 
 static List<char *> strings;
@@ -193,11 +179,7 @@ TAGLIB_C_DECL
 char *taglib_picture_base64data(const TagLib_Picture *picture)
 {
   const TagLib::Picture *p = reinterpret_cast<const TagLib::Picture *>(picture);
-  ByteVector d = p->base64data();
-  char *s = ::strndup(d.data(), d.size());
-  if(stringManagementEnabled)
-    strings.append(s);
-  return s;
+  return p->base64data().data();
 }
 
 TAGLIB_C_DECL

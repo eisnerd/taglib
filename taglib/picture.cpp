@@ -42,15 +42,14 @@ Picture::~Picture()
     delete d;
 }
 
-ByteVector Picture::base64data() const
+ByteVector &Picture::base64data() const
 {
   if (d)
     delete d;
   d = base64encode(data());
-  if (d)
-    return *d;
-  else
-    return "";
+  if (!d)
+    d = new ByteVector("");
+  return *d;
 }
 
 String Picture::description() const

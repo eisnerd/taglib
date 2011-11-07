@@ -58,7 +58,7 @@ namespace TagLib {
     /*!
      * Returns the picture content encoded as a base64 string
      */
-    virtual ByteVector base64data() const;
+    virtual ByteVector &base64data() const;
 
     /*!
      * Returns the MIME type of the picture content.
@@ -67,26 +67,26 @@ namespace TagLib {
 
     /*!
      * Returns the description; if no description is present or descriptions are
-	 * not supported by the tag, String::null will be returned.
+     * not supported by the tag, String::null will be returned.
      */
     virtual String description() const;
 
     /*!
      * Returns the name of the picture type; if picture types are
-	 * not supported by the tag, "Other" will be returned.
+     * not supported by the tag, "Other" will be returned.
      */
     virtual String typeName() const;
 
     /*!
      * Returns the value of the picture type; if picture types are
-	 * not supported by the tag, 0x00 will be returned.
+     * not supported by the tag, 0x00 will be returned.
      */
     virtual uint typeCode() const;
 	
     /*!
      * Default sort order.
-	 * 
-	 * \see typeCodeOrder()
+     * 
+     * \see typeCodeOrder()
      */
     virtual bool operator < (Picture &other)
     {
