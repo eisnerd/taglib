@@ -55,19 +55,21 @@ int main(int argc, char *argv[])
     properties = taglib_file_audioproperties(file);
 
     if(tag != NULL) {
-      printf("\n    title: \"%s\"\n", taglib_tag_title(tag));
-      printf("   artist: \"%s\"\n", taglib_tag_artist(tag));
-      printf("    album: \"%s\"\n", taglib_tag_album(tag));
-      printf("     year: \"%i\"\n", taglib_tag_year(tag));
-      printf("  comment: \"%s\"\n", taglib_tag_comment(tag));
-      printf("    track: \"%i\"\n", taglib_tag_track(tag));
-      printf("    genre: \"%s\"\n", taglib_tag_genre(tag));
+      printf("\n        title: \"%s\"\n", taglib_tag_title(tag));
+      printf("       artist: \"%s\"\n", taglib_tag_artist(tag));
+      printf(" album artist: \"%s\"\n", taglib_tag_album_artist(tag));
+      printf("        album: \"%s\"\n", taglib_tag_album(tag));
+      printf("         year: \"%i\"\n", taglib_tag_year(tag));
+      printf("      comment: \"%s\"\n", taglib_tag_comment(tag));
+      printf("        track: \"%i\"\n", taglib_tag_track(tag));
+      printf("        genre: \"%s\"\n", taglib_tag_genre(tag));
+      printf("     grouping: \"%s\"\n", taglib_tag_grouping(tag));
     }
-    printf(" pictures: \"%i\"\n", taglib_file_picture_count(file));
+    printf("     pictures: \"%i\"\n", taglib_file_picture_count(file));
     pictures = taglib_file_pictures(file);
     while ((picture = taglib_pictures_next(pictures)))
     {
-      printf("           %s %s %i\n", taglib_picture_typename(picture), taglib_picture_mimetype(picture), strlen(taglib_picture_base64data(picture)));
+      printf("               %s %s %i\n", taglib_picture_typename(picture), taglib_picture_mimetype(picture), strlen(taglib_picture_base64data(picture)));
     }
 
     if(properties != NULL) {

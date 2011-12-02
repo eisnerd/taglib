@@ -635,6 +635,14 @@ MP4::Tag::artist() const
 }
 
 String
+MP4::Tag::albumArtist() const
+{
+  if(d->items.contains("aART"))
+    return d->items["aART"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
 MP4::Tag::album() const
 {
   if(d->items.contains("\251alb"))
@@ -655,6 +663,14 @@ MP4::Tag::genre() const
 {
   if(d->items.contains("\251gen"))
     return d->items["\251gen"].toStringList().toString(", ");
+  return String::null;
+}
+
+String
+MP4::Tag::grouping() const
+{
+  if(d->items.contains("grup"))
+    return d->items["grup"].toStringList().toString(", ");
   return String::null;
 }
 
@@ -687,6 +703,12 @@ MP4::Tag::setArtist(const String &value)
 }
 
 void
+MP4::Tag::setAlbumArtist(const String &value)
+{
+  d->items["aART"] = StringList(value);
+}
+
+void
 MP4::Tag::setAlbum(const String &value)
 {
   d->items["\251alb"] = StringList(value);
@@ -702,6 +724,12 @@ void
 MP4::Tag::setGenre(const String &value)
 {
   d->items["\251gen"] = StringList(value);
+}
+
+void
+MP4::Tag::setGrouping(const String &value)
+{
+  d->items["grup"] = StringList(value);
 }
 
 void
