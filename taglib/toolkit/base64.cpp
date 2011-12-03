@@ -40,7 +40,7 @@ ByteVector *base64decode(const String &src)
 
 	short digit, lastdigit;
 	size_t i, j, buflen = src.length();
-	const size_t maxlen = ((buflen + 3) / 4) * 3;
+	const TagLib::uint maxlen = ((buflen + 3) / 4) * 3;
 
 	digit = lastdigit = j = 0;
 	ByteVector &decoded = *new ByteVector(maxlen + 1);
